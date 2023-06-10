@@ -51,13 +51,13 @@ app.Run();
 
 sealed class Auth0PostConfiguration : IPostConfigureOptions<OpenIdConnectOptions>
 {
-    readonly IPostConfigureOptions<OpenIdConnectOptions> baseConfigurer;
+    readonly IPostConfigureOptions<OpenIdConnectOptions> baseConfigurator;
     public Auth0PostConfiguration(IDataProtectionProvider dp) {
-        baseConfigurer = new OpenIdConnectPostConfigureOptions(dp);
+        baseConfigurator = new OpenIdConnectPostConfigureOptions(dp);
     }
 
     public void PostConfigure(string? name, OpenIdConnectOptions options) {
-        baseConfigurer.PostConfigure(name, options);
+        baseConfigurator.PostConfigure(name, options);
         options.ConfigurationManager = new Auth0ConfigurationManager(options, options.ConfigurationManager!);
     }
 }

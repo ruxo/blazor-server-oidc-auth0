@@ -3,11 +3,13 @@
 @using Microsoft.AspNetCore.Authentication
 @inject IHttpContextAccessor HttpContextAccessor
 @inject AuthenticationStateProvider AuthState
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
 
 <AuthorizeView>
    <Authorized>
       <h1>Hello @user.Identity!.Name</h1>
-      <div><a href="/logout">Logout</a></div>
+      <div><a href="#" @onclick="Logout">Logout</a></div>
       <table>
          <tr><th>Type</th><th>Value</th><th>Value Type</th><th>Props count</th></tr>
          @foreach (var claim in user.Claims) {
@@ -46,7 +48,7 @@
    <NotAuthorized>
       <p>Please login</p>
       <div>
-         <a href="/login">Login</a>
+         <a href="#" @onclick="Login">Login</a>
       </div>
    </NotAuthorized>
 </AuthorizeView>
@@ -63,6 +65,16 @@
 
       accessToken = await HttpContextAccessor.HttpContext!.GetTokenAsync("access_token");
       idToken = await HttpContextAccessor.HttpContext!.GetTokenAsync("id_token");
+   }
+
+   async Task Login() {
+      await JsRuntime.InvokeVoidAsync("MyHelpers.preventReconnection");
+      NavManager.NavigateTo("/login", forceLoad: true);
+   }
+
+   async Task Logout() {
+      await JsRuntime.InvokeVoidAsync("MyHelpers.preventReconnection");
+      NavManager.NavigateTo("/logout", forceLoad: true);
    }
 
 }
